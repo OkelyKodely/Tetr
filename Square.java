@@ -26,14 +26,14 @@ public class Square extends ThePiece {
         piece.block1.x = x;
         piece.block1.y = y;
         
-        piece.block2.x = x + 40;
+        piece.block2.x = x +20;
         piece.block2.y = y;
 
         piece.block3.x = x;
-        piece.block3.y = y + 40;
+        piece.block3.y = y +20;
 
-        piece.block4.x = x + 40;
-        piece.block4.y = y + 40;        
+        piece.block4.x = x +20;
+        piece.block4.y = y +20;        
     }
     
     public void drawImage()
@@ -45,25 +45,25 @@ public class Square extends ThePiece {
     
     public void moveLeft()
     {
-        piece.block1.x -= 40;
-        piece.block2.x -= 40;
-        piece.block3.x -= 40;
-        piece.block4.x -= 40;
+        piece.block1.x -=20;
+        piece.block2.x -=20;
+        piece.block3.x -=20;
+        piece.block4.x -=20;
     }
 
     public void moveRight()
     {
-        piece.block1.x += 40;
-        piece.block2.x += 40;
-        piece.block3.x += 40;
-        piece.block4.x += 40;
+        piece.block1.x +=20;
+        piece.block2.x +=20;
+        piece.block3.x +=20;
+        piece.block4.x +=20;
     }
 
     public void moveDown()
     {
-        piece.block1.y += 40;
-        piece.block2.y += 40;
-        piece.block3.y += 40;
-        piece.block4.y += 40;
+        piece.block1.y +=20;
+        piece.block2.y +=20;
+        piece.block3.y +=20;
+        piece.block4.y +=20;
     }
 }

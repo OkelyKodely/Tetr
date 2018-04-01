@@ -30,56 +30,56 @@ public class Rarm extends ThePiece {
     public void rotate()
     {
         if(direction.equals("right")) {
-            piece.block1.x = piece.block1.x + 80;
-            piece.block1.y = piece.block1.y + 80;
+            piece.block1.x = piece.block1.x + 40;
+            piece.block1.y = piece.block1.y + 40;
 
-            piece.block2.x = piece.block2.x + 40;
-            piece.block2.y = piece.block2.y + 40;
+            piece.block2.x = piece.block2.x + 20;
+            piece.block2.y = piece.block2.y + 20;
 
             piece.block3.x = piece.block3.x;
             piece.block3.y = piece.block3.y;        
 
-            piece.block4.x = piece.block4.x - 40;
-            piece.block4.y = piece.block4.y + 40;
+            piece.block4.x = piece.block4.x - 20;
+            piece.block4.y = piece.block4.y + 20;
 
         } else if(direction.equals("down")) {
-            piece.block1.x = piece.block1.x - 80;
-            piece.block1.y = piece.block1.y + 80;
+            piece.block1.x = piece.block1.x - 40;
+            piece.block1.y = piece.block1.y + 40;
 
-            piece.block2.x = piece.block2.x - 40;
-            piece.block2.y = piece.block2.y + 40;
+            piece.block2.x = piece.block2.x - 20;
+            piece.block2.y = piece.block2.y + 20;
 
             piece.block3.x = piece.block3.x;
             piece.block3.y = piece.block3.y;        
 
-            piece.block4.x = piece.block4.x - 40;
-            piece.block4.y = piece.block4.y - 40;
+            piece.block4.x = piece.block4.x - 20;
+            piece.block4.y = piece.block4.y - 20;
 
         } else if(direction.equals("left")) {
-            piece.block1.x = piece.block1.x - 80;
-            piece.block1.y = piece.block1.y - 80;
+            piece.block1.x = piece.block1.x - 40;
+            piece.block1.y = piece.block1.y - 40;
 
-            piece.block2.x = piece.block2.x - 40;
-            piece.block2.y = piece.block2.y - 40;
+            piece.block2.x = piece.block2.x - 20;
+            piece.block2.y = piece.block2.y - 20;
 
             piece.block3.x = piece.block3.x;
             piece.block3.y = piece.block3.y;        
 
-            piece.block4.x = piece.block4.x + 40;
-            piece.block4.y = piece.block4.y - 40;
+            piece.block4.x = piece.block4.x + 20;
+            piece.block4.y = piece.block4.y - 20;
 
         } else if(direction.equals("up")) {
-            piece.block1.x = piece.block1.x + 80;
-            piece.block1.y = piece.block1.y - 80;
+            piece.block1.x = piece.block1.x + 40;
+            piece.block1.y = piece.block1.y - 40;
 
-            piece.block2.x = piece.block2.x + 40;
-            piece.block2.y = piece.block2.y - 40;
+            piece.block2.x = piece.block2.x + 20;
+            piece.block2.y = piece.block2.y - 20;
 
             piece.block3.x = piece.block3.x;
             piece.block3.y = piece.block3.y;        
 
-            piece.block4.x = piece.block4.x + 40;
-            piece.block4.y = piece.block4.y + 40;
+            piece.block4.x = piece.block4.x + 20;
+            piece.block4.y = piece.block4.y + 20;
         }
     }
     
@@ -102,13 +102,13 @@ public class Rarm extends ThePiece {
         piece.block1.y = y;
         
         piece.block2.x = x;
-        piece.block2.y = y + 40;
+        piece.block2.y = y + 20;
 
         piece.block3.x = x;
-        piece.block3.y = y + 80;
+        piece.block3.y = y + 40;
 
-        piece.block4.x = x + 40;
-        piece.block4.y = y + 80;        
+        piece.block4.x = x + 20;
+        piece.block4.y = y + 40;        
     }
     
     public void drawImage()
@@ -120,25 +120,25 @@ public class Rarm extends ThePiece {
         
     public void moveLeft()
     {
-        piece.block1.x -= 40;
-        piece.block2.x -= 40;
-        piece.block3.x -= 40;
-        piece.block4.x -= 40;
+        piece.block1.x -= 20;
+        piece.block2.x -= 20;
+        piece.block3.x -= 20;
+        piece.block4.x -= 20;
     }
 
     public void moveRight()
     {
-        piece.block1.x += 40;
-        piece.block2.x += 40;
-        piece.block3.x += 40;
-        piece.block4.x += 40;
+        piece.block1.x += 20;
+        piece.block2.x += 20;
+        piece.block3.x += 20;
+        piece.block4.x += 20;
     }
 
     public void moveDown()
     {
-        piece.block1.y += 40;
-        piece.block2.y += 40;
-        piece.block3.y += 40;
-        piece.block4.y += 40;
+        piece.block1.y += 20;
+        piece.block2.y += 20;
+        piece.block3.y += 20;
+        piece.block4.y += 20;
     }    
 }

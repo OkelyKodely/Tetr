@@ -17,12 +17,12 @@ public class Piece {
 
         java.awt.Graphics g = panel.getGraphics();
         
-        g.drawImage(img, block1.x, block1.y, 40, 40, frame);
+        g.drawImage(img, block1.x, block1.y, 20, 20, frame);
         
-        g.drawImage(img, block2.x, block2.y, 40, 40, frame);
+        g.drawImage(img, block2.x, block2.y, 20, 20, frame);
 
-        g.drawImage(img, block3.x, block3.y, 40, 40, frame);
+        g.drawImage(img, block3.x, block3.y, 20, 20, frame);
 
-        g.drawImage(img, block4.x, block4.y, 40, 40, frame);        
+        g.drawImage(img, block4.x, block4.y, 20, 20, frame);        
     }
 }
