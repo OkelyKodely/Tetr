@@ -8,7 +8,7 @@ public class Piece {
 
         try {
 
-            String image = "poop.jpg";
+            String image = "block.png";
             javax.swing.ImageIcon i = new javax.swing.ImageIcon(this.getClass().getResource(image));
             img = i.getImage();
 

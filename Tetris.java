@@ -1,8 +1,14 @@
 public class Tetris {
  
+    public String str = "";
+
     public javax.swing.JFrame frame = new javax.swing.JFrame();
-    
+ 
+    public javax.swing.JPanel panelZero = new javax.swing.JPanel();
+     
     public javax.swing.JPanel panel = new javax.swing.JPanel();
+
+    public javax.swing.JPanel panelS = new javax.swing.JPanel();
 
     public java.util.ArrayList<ThePiece> thepieces = new java.util.ArrayList<ThePiece>();
     
@@ -32,7 +38,7 @@ public class Tetris {
     
     public RShoulder rshoulder = null;
     
-    public int gameDelay = 1590;
+    public int gameDelay = 1190;
     
     public String scoreStr = "Score: ";
     
@@ -255,7 +261,7 @@ public class Tetris {
             
             if(topReached(thepiece.getPiece()))
             {
-                this.gameDelay = 1590;
+                this.gameDelay = 1190;
                 
                 this.levelBegin = true;
                 
@@ -367,9 +373,25 @@ public class Tetris {
                 this.score++;
                 this.myScore.setText(this.scoreStr + this.score);
                 this.levelScoreUp++;
-                if(this.levelScoreUp % 12 == 0 && this.levelBegin == true && this.levelScoreUp != 0) {
-                    this.gameDelay -= 60;
+                if(this.levelScoreUp % 5 == 0 && this.levelBegin == true && this.levelScoreUp != 0) {
+                    this.gameDelay -= 120;
                     this.levelBegin = false;
+                    this.level++;
+                    java.lang.Thread t = new java.lang.Thread(new java.lang.Runnable() {
+                        @Override
+                        public void run() {
+                            myLevel.setText("Level = " + "(" + level + "/20)");
+                        }
+                    });
+                    t.start();
+                    if(this.levelScoreUp == 5) {
+                        this.levelScoreUp = 0;
+                    }
+                    if(this.gameDelay < 600) {
+                        this.gameDelay = 600;
+                    }
+                } else if(this.levelScoreUp % 5 == 0 && this.levelBegin == false) {
+                    this.gameDelay -= 120;
                     this.level++;
                     java.lang.Thread t = new java.lang.Thread(new java.lang.Runnable() {
                         @Override
@@ -381,18 +403,8 @@ public class Tetris {
                     if(this.levelScoreUp == 12) {
                         this.levelScoreUp = 0;
                     }
-                } else if(this.levelScoreUp % 12 == 0 && this.levelBegin == false) {
-                    this.gameDelay -= 60;
-                    this.level++;
-                    java.lang.Thread t = new java.lang.Thread(new java.lang.Runnable() {
-                        @Override
-                        public void run() {
-                            myLevel.setText("Level = " + "(" + level + "/20)");
-                        }
-                    });
-                    t.start();
-                    if(this.levelScoreUp == 12) {
-                        this.levelScoreUp = 0;
+                    if(this.gameDelay < 600) {
+                        this.gameDelay = 600;
                     }
                 }
             }
@@ -720,24 +732,31 @@ public class Tetris {
     
     public void BuildTetrisGuiAndEngineOfTheGame()
     {
+        frame.setTitle("WERlks askja sweklrjiojmmaf lksdafiweklj sda.,msf da/klsjafkjwakej f/.asjdf j234o5rjkl32j@#$23$J 234 jj234jk23$@#$%$%$ J$@J%J 234 dflkjsd sdfaj lksafioewjlkwklqjer sadfmasFs afsa fkljwe jlkfawj elwael");
+        
         frame.setSize(new java.awt.Dimension(240, 400));
 
         panel.setSize(new java.awt.Dimension(240, 400));
         
-        panel.setLocation(400, 0);
-        
-        javax.swing.JPanel panelZero = new javax.swing.JPanel();
+        panel.setLocation(400, 0);       
         
         panelZero.setLayout(null);
         panelZero.setSize(new java.awt.Dimension(240, 400));
         panelZero.setLocation(0, 0);
 
         panelZero.setBackground(new java.awt.Color(10, 10, 10));        
-        panel.setBackground(java.awt.Color.black);
+ 
+        panel.setBackground(new java.awt.Color(0, 128, 128));
 
+        panelS.setSize(new java.awt.Dimension(800, 400));
+        
+        panelS.setLocation(400, 400);       
+ 
         frame.add(panelZero);
 
         panelZero.add(panel);
+        
+        panelZero.add(panelS);
         
         myScore.setText(this.scoreStr + this.score);
         
@@ -745,20 +764,48 @@ public class Tetris {
         
         myLevel.setText(this.levelStr + "(" + this.level + "/20)");
 
-        this.myScore.setForeground(java.awt.Color.white);
+        this.myScore.setForeground(new java.awt.Color(30, 144, 255));
         this.myScore.setFont(new java.awt.Font("Tahoma",java.awt.Font.BOLD,36));
       
         myScore.setLocation(100, 100);
         myScore.setSize(new java.awt.Dimension(300, 30));
 
-        this.myLevel.setForeground(java.awt.Color.white);
+        this.myLevel.setForeground(new java.awt.Color(30, 144, 255));
         this.myLevel.setFont(new java.awt.Font("Tahoma",java.awt.Font.BOLD,36));
       
         myLevel.setLocation(100, 130);
         myLevel.setSize(new java.awt.Dimension(300, 30));
         
         panelZero.add(myLevel);
+        
+        javax.swing.JLabel thisIsTetrisStr = new javax.swing.JLabel();
+        thisIsTetrisStr.setText(("This Is Tetris!!!"));
+        thisIsTetrisStr.setFont(new java.awt.Font("arial", java.awt.Font.BOLD, 36));
+        thisIsTetrisStr.setForeground(java.awt.Color.pink);
+        thisIsTetrisStr.setLocation(700, 150);
+        thisIsTetrisStr.setSize(new java.awt.Dimension(400, 200));
+        
+        panelZero.add(thisIsTetrisStr);
 
+        java.lang.Thread t = new java.lang.Thread(new java.lang.Runnable() {
+            public void run()
+            {
+                while(true)
+                {
+                    try {
+                        java.lang.Thread.sleep(200);
+                    } catch(Exception e) {}
+                    //panelZero.paintImmediately(0, 0, panelZero.getWidth(), panelZero.getHeight());
+                    thisIsTetrisStr.setText((str + "this is Sparta ~"));
+                    str += " ";
+                    if(str.length() > 20) {
+                        str = "";
+                    }
+                }
+            }
+        });
+        t.start();
+        
         frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
        
         frame.setExtendedState(frame.getExtendedState() 
@@ -766,6 +813,30 @@ public class Tetris {
                                javax.swing.JFrame.MAXIMIZED_BOTH);
         
         frame.setVisible(true);
+        
+        java.lang.Thread tt = new java.lang.Thread(new java.lang.Runnable() {
+            public void run()
+            {
+                while(true)
+                {
+                    java.awt.Image img = null;
+
+                    try {
+
+                        String image = "starwars.gif";
+                        javax.swing.ImageIcon i = new javax.swing.ImageIcon(this.getClass().getResource(image));
+                        img = i.getImage();
+
+                    } catch(Exception e) {
+                    }
+
+                    java.awt.Graphics g = panelS.getGraphics();
+
+                    g.drawImage(img, 0, 0, panelS.getWidth(), panelS.getHeight(), panelS);
+                }
+            }
+        });
+        tt.start();
         
         this.frame.addKeyListener(new java.awt.event.KeyAdapter() {
 
