@@ -9,6 +9,12 @@ public class Tetris {
     public java.util.ArrayList<Block> blocks = new java.util.ArrayList<Block>();
 
     public int score = 0;
+
+    public boolean levelBegin = true;
+
+    public int levelScoreUp = 0;
+    
+    public int level = 1;
     
     public ThePiece thepiece = null;
     
@@ -32,6 +38,10 @@ public class Tetris {
     
     public javax.swing.JLabel myScore = new javax.swing.JLabel(); 
     
+    public String levelStr = "Level = ";
+
+    public javax.swing.JLabel myLevel = new javax.swing.JLabel(); 
+
     public Tetris()
     {
         BuildTetrisGuiAndEngineOfTheGame();        
@@ -245,9 +255,16 @@ public class Tetris {
             
             if(topReached(thepiece.getPiece()))
             {
+                this.gameDelay = 1590;
+                
+                this.levelBegin = true;
+                
                 this.score = 0;
                 this.myScore.setText(this.scoreStr + this.score);
                 
+                this.level = 1;
+                this.myLevel.setText("Level = " + "(" + this.level + "/20)");
+
                 thepieces.clear();
                 
                 blocks.clear();
@@ -349,6 +366,35 @@ public class Tetris {
                 clearBlocks.add(line);
                 this.score++;
                 this.myScore.setText(this.scoreStr + this.score);
+                this.levelScoreUp++;
+                if(this.levelScoreUp % 12 == 0 && this.levelBegin == true && this.levelScoreUp != 0) {
+                    this.gameDelay -= 60;
+                    this.levelBegin = false;
+                    this.level++;
+                    java.lang.Thread t = new java.lang.Thread(new java.lang.Runnable() {
+                        @Override
+                        public void run() {
+                            myLevel.setText("Level = " + "(" + level + "/20)");
+                        }
+                    });
+                    t.start();
+                    if(this.levelScoreUp == 12) {
+                        this.levelScoreUp = 0;
+                    }
+                } else if(this.levelScoreUp % 12 == 0 && this.levelBegin == false) {
+                    this.gameDelay -= 60;
+                    this.level++;
+                    java.lang.Thread t = new java.lang.Thread(new java.lang.Runnable() {
+                        @Override
+                        public void run() {
+                            myLevel.setText("Level = " + "(" + level + "/20)");
+                        }
+                    });
+                    t.start();
+                    if(this.levelScoreUp == 12) {
+                        this.levelScoreUp = 0;
+                    }
+                }
             }
         }
         for(int i=0; i<clearBlocks.size(); i++) {
@@ -697,11 +743,21 @@ public class Tetris {
         
         panelZero.add(myScore);
         
+        myLevel.setText(this.levelStr + "(" + this.level + "/20)");
+
         this.myScore.setForeground(java.awt.Color.white);
         this.myScore.setFont(new java.awt.Font("Tahoma",java.awt.Font.BOLD,36));
       
         myScore.setLocation(100, 100);
         myScore.setSize(new java.awt.Dimension(300, 30));
+
+        this.myLevel.setForeground(java.awt.Color.white);
+        this.myLevel.setFont(new java.awt.Font("Tahoma",java.awt.Font.BOLD,36));
+      
+        myLevel.setLocation(100, 130);
+        myLevel.setSize(new java.awt.Dimension(300, 30));
+        
+        panelZero.add(myLevel);
 
         frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
        
