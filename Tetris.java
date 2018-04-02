@@ -360,6 +360,7 @@ public class Tetris {
                 }
             }
         }
+        panel.paintImmediately(0, 0, 240, 480);
     }
     
     private boolean isLeft(Piece piece)
