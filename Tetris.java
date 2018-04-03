@@ -317,6 +317,8 @@ public class Tetris {
                 this.level = 1;
                 this.myLevel.setText("Level = " + "(" + this.level + "/20)");
 
+                pies.clear();
+                
                 thepieces.clear();
                 
                 blocks.clear();
@@ -469,6 +471,24 @@ public class Tetris {
     
     private boolean isLeft(Piece piece)
     {
+        for(int h = 0; h < blocks.size(); h++) {
+            
+            if((piece.block1.x + 20 == blocks.get(h).x &&
+                    piece.block1.y == blocks.get(h).y)
+                ||
+                (piece.block2.x + 20 == blocks.get(h).x &&
+                    piece.block2.y == blocks.get(h).y)
+                ||
+                (piece.block3.x + 20 == blocks.get(h).x &&
+                    piece.block3.y == blocks.get(h).y)
+                ||
+                (piece.block4.x + 20 == blocks.get(h).x &&
+                    piece.block4.y == blocks.get(h).y)) {
+                
+                return true;
+            }
+        }
+        
         for(int i = 0; i < thepieces.size(); i++) {
             if(((ThePiece)thepieces.get(i)).getPiece() != null)
             if((piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x +20== ((ThePiece)thepieces.get(i)).getPiece().block1.x
@@ -545,6 +565,24 @@ public class Tetris {
 
     private boolean isRight(Piece piece)
     {
+        for(int h = 0; h < blocks.size(); h++) {
+            
+            if((piece.block1.x - 20 == blocks.get(h).x &&
+                    piece.block1.y == blocks.get(h).y)
+                ||
+                (piece.block2.x - 20 == blocks.get(h).x &&
+                    piece.block2.y == blocks.get(h).y)
+                ||
+                (piece.block3.x - 20 == blocks.get(h).x &&
+                    piece.block3.y == blocks.get(h).y)
+                ||
+                (piece.block4.x - 20 == blocks.get(h).x &&
+                    piece.block4.y == blocks.get(h).y)) {
+                
+                return true;
+            }
+        }
+
         for(int i = 0; i < thepieces.size(); i++) {
             if(((ThePiece)thepieces.get(i)).getPiece() != null)
             if((piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x -20== ((ThePiece)thepieces.get(i)).getPiece().block1.x
@@ -818,7 +856,7 @@ public class Tetris {
     
     public void BuildTetrisGuiAndEngineOfTheGame()
     {
-        frame.setTitle("WERlks askja sweklrjiojmmaf lksdafiweklj sda.,msf da/klsjafkjwakej f/.asjdf j234o5rjkl32j@#$23$J 234 jj234jk23$@#$%$%$ J$@J%J 234 dflkjsd sdfaj lksafioewjlkwklqjer sadfmasFs afsa fkljwe jlkfawj elwael");
+        frame.setTitle("Tetris");
         
         frame.setSize(new java.awt.Dimension(240, 400));
 
@@ -863,34 +901,6 @@ public class Tetris {
         myLevel.setSize(new java.awt.Dimension(300, 30));
         
         panelZero.add(myLevel);
-        
-        javax.swing.JLabel thisIsTetrisStr = new javax.swing.JLabel();
-        thisIsTetrisStr.setText(("This Is Tetris!!!"));
-        thisIsTetrisStr.setFont(new java.awt.Font("arial", java.awt.Font.BOLD, 36));
-        thisIsTetrisStr.setForeground(java.awt.Color.pink);
-        thisIsTetrisStr.setLocation(700, 150);
-        thisIsTetrisStr.setSize(new java.awt.Dimension(400, 200));
-        
-        panelZero.add(thisIsTetrisStr);
-
-        java.lang.Thread t = new java.lang.Thread(new java.lang.Runnable() {
-            public void run()
-            {
-                while(true)
-                {
-                    try {
-                        java.lang.Thread.sleep(200);
-                    } catch(Exception e) {}
-                    //panelZero.paintImmediately(0, 0, panelZero.getWidth(), panelZero.getHeight());
-                    thisIsTetrisStr.setText((str + "this is Sparta ~"));
-                    str += " ";
-                    if(str.length() > 20) {
-                        str = "";
-                    }
-                }
-            }
-        });
-        t.start();
         
         frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
        
