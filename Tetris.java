@@ -26,7 +26,7 @@ public class Tetris {
     
     public ThePiece thepiece = null;
     
-    public PieceOfMush pie = null;
+    public PieceOfMush[] pie = null;
     
     public Square square = null;
     
@@ -42,7 +42,7 @@ public class Tetris {
     
     public RShoulder rshoulder = null;
     
-    public int gameDelay = 1190;
+    public int gameDelay = 1290;
     
     public String scoreStr = "Score: ";
     
@@ -62,10 +62,6 @@ public class Tetris {
     {
         java.util.Random r1 = new java.util.Random();
         
-        int x = r1.nextInt(12) * 20;
-        
-        int y = 0;
-
         java.util.Random r = new java.util.Random();
         
         int v = r.nextInt(7);
@@ -141,12 +137,20 @@ public class Tetris {
             thepiece = rshoulder;
         
         }
-            
-        pie = new PieceOfMush();
-        pie.block1.x = x;
-        pie.block1.y = y;
         
-        pie.kind = "now";
+        pie = new PieceOfMush[2];
+
+        for(int q=0; q<2; q++) {
+            int x = r1.nextInt(12) * 20;
+
+            int y = 0;
+
+            pie[q] = new PieceOfMush();
+            pie[q].block1.x = x;
+            pie[q].block1.y = y;
+
+            pie[q].kind = "now";
+        }
         
         thepieces.add(thepiece);
         
@@ -169,7 +173,10 @@ public class Tetris {
                 ((PieceOfMush)pies.get(i)).drawImage(frame, panel);
             }    
 
-            pie.drawImage(frame, panel);
+            for(int s = 0; s < pie.length; s++) {
+            
+                pie[s].drawImage(frame, panel);
+            }
             
             if(stacked(thepiece.getPiece())
                 ||
@@ -279,35 +286,39 @@ public class Tetris {
                 thepiece.moveDown();
             }
             
-            if(isS(pie)
-                ||
-                pie.block1.y > 360) {
+            for(int t = 0; t < pie.length; t++) {
+                if(isS(pie[t])
+                    ||
+                    pie[t].block1.y > 360) {
 
-                pies.add(pie);
-                
-                blocks.add(pie.block1);
-                
-                java.util.Random r3 = new java.util.Random();
+                    pies.add(pie[t]);
 
-                int xx = r3.nextInt(12) * 20;
-                
-                int yy = 0;
+                    blocks.add(pie[t].block1);
 
-                pie = new PieceOfMush();
-                
-                pie.block1.x = xx;
-                pie.block1.y = yy;
-                
-                pie.kind = "now";
-            }
-            else {
-                
-                pie.block1.y += 20;
+                    clear();
+                    
+                    java.util.Random r3 = new java.util.Random();
+
+                    int xx = r3.nextInt(12) * 20;
+
+                    int yy = 0;
+
+                    pie[t] = new PieceOfMush();
+
+                    pie[t].block1.x = xx;
+                    pie[t].block1.y = yy;
+
+                    pie[t].kind = "now";
+                }
+                else {
+
+                    pie[t].block1.y += 20;
+                }
             }
             
             if(topReached(thepiece.getPiece()))
             {
-                this.gameDelay = 1190;
+                this.gameDelay = 1290;
                 
                 this.levelBegin = true;
                 
