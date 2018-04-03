@@ -10,8 +10,10 @@ public class Tetris {
 
     public javax.swing.JPanel panelS = new javax.swing.JPanel();
 
-    public java.util.ArrayList<ThePiece> thepieces = new java.util.ArrayList<ThePiece>();
+    public java.util.ArrayList thepieces = new java.util.ArrayList();
     
+    public java.util.ArrayList pies = new java.util.ArrayList();
+
     public java.util.ArrayList<Block> blocks = new java.util.ArrayList<Block>();
 
     public int score = 0;
@@ -23,6 +25,8 @@ public class Tetris {
     public int level = 1;
     
     public ThePiece thepiece = null;
+    
+    public PieceOfMush pie = null;
     
     public Square square = null;
     
@@ -56,6 +60,12 @@ public class Tetris {
     
     public void RunAndPlay()
     {
+        java.util.Random r1 = new java.util.Random();
+        
+        int x = r1.nextInt(12) * 20;
+        
+        int y = 0;
+
         java.util.Random r = new java.util.Random();
         
         int v = r.nextInt(7);
@@ -129,8 +139,15 @@ public class Tetris {
             rshoulder.panel = this.panel;
 
             thepiece = rshoulder;
+        
         }
-
+            
+        pie = new PieceOfMush();
+        pie.block1.x = x;
+        pie.block1.y = y;
+        
+        pie.kind = "now";
+        
         thepieces.add(thepiece);
         
         while(true) {
@@ -144,12 +161,15 @@ public class Tetris {
 
             for(int i = 0; i < thepieces.size(); i++)
             {
-                if(thepieces == null || thepieces.get(i) == null) {
-                    System.exit(-1);
-                }
+                ((ThePiece)thepieces.get(i)).drawImage();
+            }    
+            
+            for(int i = 0; i < pies.size(); i++)
+            {
+                ((PieceOfMush)pies.get(i)).drawImage(frame, panel);
+            }    
 
-                thepieces.get(i).drawImage();
-            }     
+            pie.drawImage(frame, panel);
             
             if(stacked(thepiece.getPiece())
                 ||
@@ -257,6 +277,32 @@ public class Tetris {
             else {
 
                 thepiece.moveDown();
+            }
+            
+            if(isS(pie)
+                ||
+                pie.block1.y > 360) {
+
+                pies.add(pie);
+                
+                blocks.add(pie.block1);
+                
+                java.util.Random r3 = new java.util.Random();
+
+                int xx = r3.nextInt(12) * 20;
+                
+                int yy = 0;
+
+                pie = new PieceOfMush();
+                
+                pie.block1.x = xx;
+                pie.block1.y = yy;
+                
+                pie.kind = "now";
+            }
+            else {
+                
+                pie.block1.y += 20;
             }
             
             if(topReached(thepiece.getPiece()))
@@ -424,69 +470,70 @@ public class Tetris {
     private boolean isLeft(Piece piece)
     {
         for(int i = 0; i < thepieces.size(); i++) {
-            if((piece != thepieces.get(i).getPiece() && piece.block1.x +20== thepieces.get(i).getPiece().block1.x
+            if(((ThePiece)thepieces.get(i)).getPiece() != null)
+            if((piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x +20== ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y == thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block1.x +20 == thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x +20 == ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y == thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block1.x +20 == thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x +20 == ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y == thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block1.x +20 == thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x +20 == ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y == thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x +20 == thepieces.get(i).getPiece().block1.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x +20 == ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y == thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y == ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x +20 == thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x +20 == ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y == thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y == ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x +20 == thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x +20 == ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y == thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y == ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x +20 == thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x +20 == ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y == thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y == ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x +20 == thepieces.get(i).getPiece().block1.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x +20 == ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y == thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y == ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x +20 == thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x +20 == ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y == thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y == ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x +20 == thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x +20 == ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y == thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y == ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x +20 == thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x +20 == ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y == thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y == ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x +20 == thepieces.get(i).getPiece().block1.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x +20 == ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y == thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y == ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x +20== thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x +20== ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y == thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y == ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x +20== thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x +20== ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y == thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y == ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x +20== thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x +20== ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y == thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y == ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ) {
                 
                     return true;
@@ -499,69 +546,70 @@ public class Tetris {
     private boolean isRight(Piece piece)
     {
         for(int i = 0; i < thepieces.size(); i++) {
-            if((piece != thepieces.get(i).getPiece() && piece.block1.x -20== thepieces.get(i).getPiece().block1.x
+            if(((ThePiece)thepieces.get(i)).getPiece() != null)
+            if((piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x -20== ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y == thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block1.x -20 == thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x -20 == ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y == thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block1.x -20 == thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x -20 == ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y == thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block1.x -20 == thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x -20 == ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y == thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x -20 == thepieces.get(i).getPiece().block1.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x -20 == ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y == thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y == ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x -20 == thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x -20 == ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y == thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y == ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x -20 == thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x -20 == ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y == thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y == ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x -20 == thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x -20 == ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y == thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y == ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x -20 == thepieces.get(i).getPiece().block1.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x -20 == ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y == thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y == ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x -20 == thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x -20 == ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y == thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y == ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x -20 == thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x -20 == ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y == thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y == ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x -20 == thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x -20 == ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y == thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y == ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x -20 == thepieces.get(i).getPiece().block1.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x -20 == ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y == thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y == ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x -20== thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x -20== ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y == thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y == ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x -20== thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x -20== ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y == thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y == ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x -20== thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x -20== ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y == thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y == ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ) {
                 
                     return true;
@@ -574,77 +622,78 @@ public class Tetris {
     private boolean topReached(Piece piece)
     {
         for(int i = 0; i < thepieces.size(); i++) {
-            if(piece != thepieces.get(i).getPiece() && piece.block1.y == 40
+            if(((ThePiece)thepieces.get(i)).getPiece() != null)
+            if(piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == 40
                 ||
-                piece != thepieces.get(i).getPiece() && piece.block1.y == 40
+                piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == 40
                 ||
-                piece != thepieces.get(i).getPiece() && piece.block1.y == 40
+                piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == 40
                 ||
-                piece != thepieces.get(i).getPiece() && piece.block1.y == 40) {
+                piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == 40) {
                 
-                if((piece != thepieces.get(i).getPiece() && piece.block1.x == thepieces.get(i).getPiece().block1.x
+                if((piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x == ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y == thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block1.x == thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x == ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y == thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block1.x == thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x == ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y == thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block1.x == thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x == ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y == thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y == ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x == thepieces.get(i).getPiece().block1.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x == ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y == thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y == ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x == thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x == ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y == thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y == ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x == thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x == ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y == thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y == ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x == thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x == ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y == thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y == ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x == thepieces.get(i).getPiece().block1.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x == ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y == thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y == ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x == thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x == ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y == thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y == ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x == thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x == ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y == thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y == ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x == thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x == ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y == thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y == ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x == thepieces.get(i).getPiece().block1.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x == ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y +20== thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y +20== ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x == thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x == ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y +20== thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y +20== ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x == thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x == ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y +20== thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y +20== ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x == thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x == ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y +20== thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y +20== ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ) {
                 
                     return true;
@@ -654,73 +703,110 @@ public class Tetris {
     
         return false;        
     }
+
+    public boolean isS(PieceOfMush pie)
+    {
+        for(int i = 0; i < blocks.size(); i++) {
+            
+            if(blocks.get(i).x == pie.block1.x &&
+               blocks.get(i).y - 20 == pie.block1.y) {
+
+                return true;
+            }
+        }
+        
+        return false;
+    }
     
     public boolean stacked(Piece piece)
     {
+        for(int h = 0; h < pies.size(); h++) {
+        
+            if((piece.block1.x == ((PieceOfMush)pies.get(h)).block1.x
+                    &&
+                    piece.block1.y + 20 == ((PieceOfMush)pies.get(h)).block1.y)
+                    ||
+                    (piece.block2.x == ((PieceOfMush)pies.get(h)).block1.x
+                    &&
+                    piece.block2.y + 20 == ((PieceOfMush)pies.get(h)).block1.y)
+                    ||
+                    (piece.block3.x == ((PieceOfMush)pies.get(h)).block1.x
+                    &&
+                    piece.block3.y + 20 == ((PieceOfMush)pies.get(h)).block1.y)
+                    ||
+                    (piece.block4.x == ((PieceOfMush)pies.get(h)).block1.x
+                    &&
+                    piece.block4.y + 20 == ((PieceOfMush)pies.get(h)).block1.y)) {
+                
+                return true;
+            }
+        }
+        
         for(int i = 0; i < thepieces.size(); i++) {
-            if((piece != thepieces.get(i).getPiece() && piece.block1.x == thepieces.get(i).getPiece().block1.x
+            if(((ThePiece)thepieces.get(i)).getPiece() != null)
+            if((piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x == ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y +20== thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y +20== ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block1.x == thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x == ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y +20== thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y +20== ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block1.x == thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x == ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y +20== thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y +20== ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block1.x == thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.x == ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block1.y +20== thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block1.y +20== ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x == thepieces.get(i).getPiece().block1.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x == ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y +20== thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y +20== ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x == thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x == ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y +20== thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y +20== ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x == thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x == ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y +20== thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y +20== ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block2.x == thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.x == ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block2.y +20== thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block2.y +20== ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x == thepieces.get(i).getPiece().block1.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x == ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y +20== thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y +20== ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x == thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x == ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y +20== thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y +20== ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x == thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x == ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y +20== thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y +20== ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block3.x == thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.x == ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block3.y +20== thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block3.y +20== ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x == thepieces.get(i).getPiece().block1.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x == ((ThePiece)thepieces.get(i)).getPiece().block1.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y +20== thepieces.get(i).getPiece().block1.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y +20== ((ThePiece)thepieces.get(i)).getPiece().block1.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x == thepieces.get(i).getPiece().block2.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x == ((ThePiece)thepieces.get(i)).getPiece().block2.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y +20== thepieces.get(i).getPiece().block2.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y +20== ((ThePiece)thepieces.get(i)).getPiece().block2.y)
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x == thepieces.get(i).getPiece().block3.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x == ((ThePiece)thepieces.get(i)).getPiece().block3.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y +20== thepieces.get(i).getPiece().block3.y)                    
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y +20== ((ThePiece)thepieces.get(i)).getPiece().block3.y)                    
                     ||
-                    (piece != thepieces.get(i).getPiece() && piece.block4.x == thepieces.get(i).getPiece().block4.x
+                    (piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.x == ((ThePiece)thepieces.get(i)).getPiece().block4.x
                     &&
-                    piece != thepieces.get(i).getPiece() && piece.block4.y +20== thepieces.get(i).getPiece().block4.y)
+                    piece != ((ThePiece)thepieces.get(i)).getPiece() && piece.block4.y +20== ((ThePiece)thepieces.get(i)).getPiece().block4.y)
                     ) {
                 
                     return true;
@@ -866,7 +952,7 @@ public class Tetris {
                         if(thepieces == null || thepieces.get(i) == null) {
                             System.exit(-1);
                         }
-                        thepieces.get(i).drawImage();
+                        ((ThePiece)thepieces.get(i)).drawImage();
                     }     
                 }
 
@@ -890,7 +976,7 @@ public class Tetris {
                         if(thepieces == null || thepieces.get(i) == null) {
                             System.exit(-1);
                         }
-                        thepieces.get(i).drawImage();
+                        ((ThePiece)thepieces.get(i)).drawImage();
                     }     
                 }
                 
@@ -991,7 +1077,7 @@ public class Tetris {
                         }
 
                         else {
-                            thepieces.get(i).drawImage();
+                            ((ThePiece)thepieces.get(i)).drawImage();
                         }
                     }
                 }
@@ -1019,7 +1105,7 @@ public class Tetris {
                             System.exit(-1);
                         }
                         
-                        thepieces.get(i).drawImage();
+                        ((ThePiece)thepieces.get(i)).drawImage();
                     }     
                 }
             }
