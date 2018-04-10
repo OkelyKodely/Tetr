@@ -1,6 +1,8 @@
 public class Tetris {
  
     public String str = "";
+    
+    public int pic1 = 28, pic2 = 29, pic3 = 30;
 
     public javax.swing.JFrame frame = new javax.swing.JFrame();
  
@@ -18,6 +20,8 @@ public class Tetris {
 
     public java.util.ArrayList bombsVertically = new java.util.ArrayList();
 
+    public java.util.ArrayList bombsRandomnlly = new java.util.ArrayList();
+
     public java.util.ArrayList<Block> blocks = new java.util.ArrayList<Block>();
 
     public int score = 0;
@@ -26,7 +30,7 @@ public class Tetris {
 
     public int levelScoreUp = 0;
     
-    public int level = 1;
+    public int level = 10;
     
     public ThePiece thepiece = null;
     
@@ -35,6 +39,8 @@ public class Tetris {
     public Bomb[] bombHorizontally = null;
 
     public Bomb[] bombVertically = null;
+
+    public Bomb[] bombRandomnlly = null;
 
     public Square square = null;
     
@@ -66,12 +72,8 @@ public class Tetris {
         RunAndPlay();
     }
     
-    public void RunAndPlay()
+    private void GetNewPiece()
     {
-        java.util.Random r1 = new java.util.Random();
-        
-        java.util.Random r3 = new java.util.Random();
-
         java.util.Random r = new java.util.Random();
         
         int v = r.nextInt(7);
@@ -145,13 +147,19 @@ public class Tetris {
             rshoulder.panel = this.panel;
 
             thepiece = rshoulder;
-        
         }
-        
+
+        thepieces.add(thepiece);
+    }
+    
+    private void GetNewBombHorizontal()
+    {
+        java.util.Random r = new java.util.Random();
+
         bombHorizontally = new Bomb[1];
 
         for(int q=0; q<bombHorizontally.length; q++) {
-            int x = r3.nextInt(12) * 20;
+            int x = r.nextInt(12) * 20;
 
             int y = 0;
 
@@ -161,11 +169,16 @@ public class Tetris {
 
             bombHorizontally[q].kind = "h";
         }
+    }
+    
+    private void GetNewBombVertical()
+    {
+        java.util.Random r = new java.util.Random();
 
         bombVertically = new Bomb[1];
 
         for(int q=0; q<bombVertically.length; q++) {
-            int x = r3.nextInt(12) * 20;
+            int x = r.nextInt(12) * 20;
 
             int y = 0;
 
@@ -175,6 +188,62 @@ public class Tetris {
 
             bombVertically[q].kind = "v";
         }
+    }
+
+    private void GetNewBombRandom()
+    {
+        java.util.Random r3 = new java.util.Random();
+
+        bombRandomnlly = new Bomb[1];
+
+        for(int q=0; q<bombRandomnlly.length; q++) {
+            int x = r3.nextInt(12) * 20;
+
+            int y = 0;
+
+            bombRandomnlly[q] = new Bomb();
+            bombRandomnlly[q].block.x = x;
+            bombRandomnlly[q].block.y = y;
+
+            bombRandomnlly[q].kind = "r";
+        }
+    }
+    
+    private void GoDownBombHorizontal(int t)
+    {
+        if(bombHorizontally[t].block.y < 220)
+            bombHorizontally[t].block.y += 60;
+        else
+            bombHorizontally[t].block.y += 20;
+    }
+
+    private void GoDownBombVertical(int t)
+    {
+        if(bombVertically[t].block.y < 220)
+            bombVertically[t].block.y += 60;
+        else
+            bombVertically[t].block.y += 20;
+    }
+
+    private void GoDownBombRandom(int t)
+    {
+        if(bombRandomnlly[t].block.y < 220)
+            bombRandomnlly[t].block.y += 60;
+        else
+            bombRandomnlly[t].block.y += 20;
+    }
+
+    public void RunAndPlay()
+    {
+        java.util.Random r1 = new java.util.Random();
+        
+        GetNewPiece();
+
+        GetNewBombHorizontal();
+        
+        GetNewBombVertical();
+        
+        GetNewBombRandom();
 
         pie = new PieceOfMush[2];
 
@@ -190,52 +259,9 @@ public class Tetris {
             pie[q].kind = "now";
         }
         
-        thepieces.add(thepiece);
-        
-        while(true) {
-            
-            try {
-                Thread.sleep(gameDelay);
-            
-            } catch(Exception e) {}
-            
-            panel.paintImmediately(0, 0, 240, 680);
-
-            for(int i = 0; i < thepieces.size(); i++)
-            {
-                ((ThePiece)thepieces.get(i)).drawImage();
-            }    
-            
-            for(int i = 0; i < bombsHorizontally.size(); i++)
-            {
-                ((Bomb)bombsHorizontally.get(i)).drawImage(frame, panel);
-            }    
-
-            for(int s = 0; s < bombHorizontally.length; s++) {
-            
-                bombHorizontally[s].drawImage(frame, panel);
-            }
-
-            for(int i = 0; i < bombsVertically.size(); i++)
-            {
-                ((Bomb)bombsVertically.get(i)).drawImage(frame, panel);
-            }    
-
-            for(int s = 0; s < bombVertically.length; s++) {
-            
-                bombVertically[s].drawImage(frame, panel);
-            }
-            
-            for(int i = 0; i < pies.size(); i++)
-            {
-                ((PieceOfMush)pies.get(i)).drawImage(frame, panel);
-            }    
-
-            for(int s = 0; s < pie.length; s++) {
-            
-                pie[s].drawImage(frame, panel);
-            }
-            
+        while(true)
+        {
+            Draw();
             if(stacked(thepiece.getPiece())
                 ||
                 thepiece.getPiece().block[0].y > 560
@@ -247,100 +273,16 @@ public class Tetris {
                 thepiece.getPiece().block[3].y > 560) {
  
                 thepieces.add(thepiece);
-                
                 blocks.add(thepiece.getPiece().block[0]);
-
                 blocks.add(thepiece.getPiece().block[1]);
-
                 blocks.add(thepiece.getPiece().block[2]);
-
                 blocks.add(thepiece.getPiece().block[3]);
  
                 clear();
 
-                if(blocks.size() == 0)
-                    System.exit(-1);
-               
-                java.util.Random r2 = new java.util.Random();
+                GetNewPiece();
 
-                int v2 = r2.nextInt(7);
-
-                if(v2 == 0) {
-
-                    square = new Square(120, 40);
-
-                    square.frame = this.frame;
-
-                    square.panel = this.panel;
-
-                    thepiece = square;
-
-                } else if(v2 == 1) {
-
-                    pyr = new Pyramid(120, 40);
-
-                    pyr.frame = this.frame;
-
-                    pyr.panel = this.panel;
-
-                    thepiece = pyr;
-
-                } else if(v2 == 2) {
-
-                    line = new Line(120, 40);
-
-                    line.frame = this.frame;
-
-                    line.panel = this.panel;            
-
-                    thepiece = line;
-
-                } else if(v2 == 3) {
-
-                    larm = new Larm(120, 40);
-
-                    larm.frame = this.frame;
-
-                    larm.panel = this.panel;            
-
-                    thepiece = larm;
-
-                } else if(v2 == 4) {
-
-                    rarm = new Rarm(120, 40);
-
-                    rarm.frame = this.frame;
-
-                    rarm.panel = this.panel;
-
-                    thepiece = rarm;
-
-                } else if(v2 == 5) {
-
-                    lshoulder = new LShoulder(120, 40);
-
-                    lshoulder.frame = this.frame;
-
-                    lshoulder.panel = this.panel;
-
-                    thepiece = lshoulder;
-
-                } else if(v2 == 6) {
-
-                    rshoulder = new RShoulder(120, 40);
-
-                    rshoulder.frame = this.frame;
-
-                    rshoulder.panel = this.panel;
-
-                    thepiece = rshoulder;
-                }
-
-                thepieces.add(thepiece);
-            }
-
-            else {
-
+            } else {
                 thepiece.moveDown();
             }
             
@@ -389,39 +331,7 @@ public class Tetris {
 
                     explodeHorizontally();
                     
-                    java.util.Random r4 = new java.util.Random();
-
-                    int xx = r4.nextInt(12) * 20;
-
-                    int yy = 0;
-
-                    bombHorizontally[t] = new Bomb();
-
-                    bombHorizontally[t].block.x = xx;
-                    bombHorizontally[t].block.y = yy;
-
-                    bombHorizontally[t].kind = "h";
-                }
-                else {
-
-                    if(bombHorizontally[t].block.y < 220)
-                        bombHorizontally[t].block.y += 60;
-                    else
-                        bombHorizontally[t].block.y += 20;
-                }
-            }
-
-            for(int t = 0; t < bombVertically.length; t++) {
-                bombVertically[t].block.kind = "bomb";
-                if(bombIsStacked(bombVertically[t])
-                    ||
-                    bombVertically[t].block.y > 560) {
-
-                    bombsVertically.add(bombVertically[t]);
-
-                    blocks.add(bombVertically[t].block);
-
-                    explodeVertically();
+                    clear();
                     
                     java.util.Random r4 = new java.util.Random();
 
@@ -429,19 +339,55 @@ public class Tetris {
 
                     int yy = 0;
 
-                    bombVertically[t] = new Bomb();
-
-                    bombVertically[t].block.x = xx;
-                    bombVertically[t].block.y = yy;
-
-                    bombVertically[t].kind = "v";
+                    GetNewBombHorizontal();
                 }
                 else {
 
-                    if(bombVertically[t].block.y < 220)
-                        bombVertically[t].block.y += 60;
-                    else
-                        bombVertically[t].block.y += 20;
+                    GoDownBombHorizontal(t);
+                }
+            }
+
+            for(int t = 0; t < bombVertically.length; t++) {
+                bombVertically[t].block.kind = "vert";
+                if(bombIsStacked(bombVertically[t])
+                    ||
+                    bombVertically[t].block.y > 560) {
+
+                    bombsVertically.add(bombVertically[t]);
+                    
+                    blocks.add(bombVertically[t].block);
+
+                    explodeVertically();
+                    
+                    clear();
+                    
+                    GetNewBombVertical();
+                }
+                else {
+
+                    GoDownBombVertical(t);
+                }
+            }
+
+            for(int t = 0; t < bombRandomnlly.length; t++) {
+                bombRandomnlly[t].block.kind = "bomb";
+                if(bombIsStacked(bombRandomnlly[t])
+                    ||
+                    bombRandomnlly[t].block.y > 560) {
+
+                    bombsVertically.add(bombRandomnlly[t]);
+
+                    blocks.add(bombRandomnlly[t].block);
+
+                    explodeRandomnly();
+                    
+                    clear();
+                    
+                    GetNewBombRandom();
+                }
+                else {
+
+                    GoDownBombRandom(t);
                 }
             }
 
@@ -458,91 +404,83 @@ public class Tetris {
                 this.myLevel.setText("Level " + this.level + " Of 20");
 
                 bombsHorizontally.clear();
-                
+                bombsVertically.clear();
+                bombsRandomnlly.clear();
                 pies.clear();
-                
                 thepieces.clear();
-                
                 blocks.clear();
                 
-                java.util.Random r2 = new java.util.Random();
-
-                int v2 = r2.nextInt(7);
-
-                if(v2 == 0) {
-
-                    square = new Square(120, 40);
-
-                    square.frame = this.frame;
-
-                    square.panel = this.panel;
-
-                    thepiece = square;
-
-                } else if(v2 == 1) {
-
-                    pyr = new Pyramid(120, 40);
-
-                    pyr.frame = this.frame;
-
-                    pyr.panel = this.panel;
-
-                    thepiece = pyr;
-
-                } else if(v2 == 2) {
-
-                    line = new Line(120, 40);
-
-                    line.frame = this.frame;
-
-                    line.panel = this.panel;            
-
-                    thepiece = line;
-
-                } else if(v2 == 3) {
-
-                    larm = new Larm(120, 40);
-
-                    larm.frame = this.frame;
-
-                    larm.panel = this.panel;            
-
-                    thepiece = larm;
-
-                } else if(v2 == 4) {
-
-                    rarm = new Rarm(120, 40);
-
-                    rarm.frame = this.frame;
-
-                    rarm.panel = this.panel;
-
-                    thepiece = rarm;
-
-                } else if(v2 == 5) {
-
-                    lshoulder = new LShoulder(120, 40);
-
-                    lshoulder.frame = this.frame;
-
-                    lshoulder.panel = this.panel;
-
-                    thepiece = lshoulder;
-
-                } else if(v2 == 6) {
-
-                    rshoulder = new RShoulder(120, 40);
-
-                    rshoulder.frame = this.frame;
-
-                    rshoulder.panel = this.panel;
-
-                    thepiece = rshoulder;
-                }
-
-                thepieces.add(thepiece);
+                GetNewPiece();
             }
         }
+    }
+
+    public void Draw()
+    {
+        try {
+            Thread.sleep(gameDelay);
+
+        } catch(Exception e) {}
+        try {
+            String image = "background.gif";
+            javax.swing.ImageIcon i = new javax.swing.ImageIcon(this.getClass().getResource(image));
+            java.awt.Image img = i.getImage();
+            java.awt.Graphics g = panel.getGraphics();
+            g.drawImage(img, 0, 0, panel.getWidth(), panel.getHeight(), null);
+        } catch(Exception ex) {System.out.println(ex.getMessage());}
+        for(int i = 0; i < thepieces.size(); i++) {
+
+            ((ThePiece)thepieces.get(i)).drawImage();
+        }    
+        for(int i = 0; i < bombsHorizontally.size(); i++) {
+
+            ((Bomb)bombsHorizontally.get(i)).drawImage(frame, panel);
+        }    
+        for(int s = 0; s < bombHorizontally.length; s++) {
+
+            bombHorizontally[s].drawImage(frame, panel);
+        }
+        for(int i = 0; i < bombsVertically.size(); i++) {
+
+            ((Bomb)bombsVertically.get(i)).drawImage(frame, panel);
+        }    
+        for(int s = 0; s < bombVertically.length; s++) {
+
+            bombVertically[s].drawImage(frame, panel);
+        }
+        for(int i = 0; i < bombsRandomnlly.size(); i++) {
+
+            ((Bomb)bombsRandomnlly.get(i)).drawImage(frame, panel);
+        }    
+        for(int s = 0; s < bombRandomnlly.length; s++) {
+
+            bombRandomnlly[s].drawImage(frame, panel);
+        }
+        for(int i = 0; i < pies.size(); i++) {
+
+            ((PieceOfMush)pies.get(i)).drawImage(frame, panel);
+        }    
+        for(int s = 0; s < pie.length; s++) {
+
+            pie[s].drawImage(frame, panel);
+        }
+    }
+
+    public void explodeRandomnly()
+    {
+        java.util.Random r = new java.util.Random();
+        for(int i = 0; i < 2; i++) {
+            int x = r.nextInt(blocks.size());
+            blocks.get(x).y = 10000;
+            blocks.get(x).y = 10000;
+        }
+        try {
+            String image = "background.gif";
+            javax.swing.ImageIcon i = new javax.swing.ImageIcon(this.getClass().getResource(image));
+            java.awt.Image img = i.getImage();
+            java.awt.Graphics g = panel.getGraphics();
+            g.drawImage(img, 0, 0, panel.getWidth(), panel.getHeight(), null);
+        } catch(Exception ex) {System.out.println(ex.getMessage());}
     }
     
     private void explodeHorizontally()
@@ -561,8 +499,6 @@ public class Tetris {
                     clearThisLine++;
                     blocks.get(i).kind = "explode";
                 }
-                System.out.println(blocks.get(i).kind);
-                System.out.println("" + clearThisLine);
                 if(blocks.get(i).kind.equals("explode") && clearThisLine > 2 && y + 20 == theline) {
                     clearBlocks.add(line);
                 } else if(clearThisLine > 11) {
@@ -579,7 +515,13 @@ public class Tetris {
                 }
             }
         }
-        panel.paintImmediately(0, 0, 240, 680);
+        try {
+            String image = "background.gif";
+            javax.swing.ImageIcon i = new javax.swing.ImageIcon(this.getClass().getResource(image));
+            java.awt.Image img = i.getImage();
+            java.awt.Graphics g = panel.getGraphics();
+            g.drawImage(img, 0, 0, panel.getWidth(), panel.getHeight(), null);
+        } catch(Exception ex) {System.out.println(ex.getMessage());}
     }
     
     private void explodeVertically()
@@ -591,11 +533,11 @@ public class Tetris {
                 int x = blocks.get(i).x;
                 int y = blocks.get(i).y;
                 int theline = line * 20;
-                if(blocks.get(i).kind.equals("bomb") && x == theline) {
+                if(blocks.get(i).kind.equals("vert") && x == theline) {
                     clearThisLine++;
-                    blocks.get(i).kind = "explode";
+                    blocks.get(i).kind = "vert";
                 }
-                if(blocks.get(i).kind.equals("explode") && clearThisLine > 0 && x == theline) {
+                if(blocks.get(i).kind.equals("vert") && clearThisLine > 1 && x == theline) {
                     clearBlocks.add(line);
                 }
             }
@@ -608,7 +550,13 @@ public class Tetris {
                 }
             }
         }
-        panel.paintImmediately(0, 0, 240, 680);
+        try {
+            String image = "background.gif";
+            javax.swing.ImageIcon i = new javax.swing.ImageIcon(this.getClass().getResource(image));
+            java.awt.Image img = i.getImage();
+            java.awt.Graphics g = panel.getGraphics();
+            g.drawImage(img, 0, 0, panel.getWidth(), panel.getHeight(), null);
+        } catch(Exception ex) {System.out.println(ex.getMessage());}
     }
 
     private void clear()
@@ -633,6 +581,26 @@ public class Tetris {
                     this.gameDelay -= 120;
                     this.levelBegin = false;
                     this.level++;
+                    if(this.level != 11) {
+                        if(pic1 < 60) {
+                            pic1 += 3;
+                        }
+                        if(pic2 < 60) {
+                            pic2 += 3;
+                        }
+                        if(pic3 < 60) {
+                            pic3 += 3;
+                        }
+                        if(this.level == 20) {
+                            pic1 = 1;
+                            pic2 = 2;
+                            pic3 = 3;
+                        }
+                    } else if(this.level == 11) {
+                        pic1 = 1;
+                        pic2 = 2;
+                        pic3 = 3;
+                    }
                     java.lang.Thread t = new java.lang.Thread(new java.lang.Runnable() {
                         @Override
                         public void run() {
@@ -650,6 +618,26 @@ public class Tetris {
                 } else if(this.levelScoreUp % 1 == 0 && this.levelBegin == false) {
                     this.gameDelay -= 120;
                     this.level++;
+                    if(this.level != 11) {
+                        if(pic1 < 60) {
+                            pic1 += 3;
+                        }
+                        if(pic2 < 60) {
+                            pic2 += 3;
+                        }
+                        if(pic3 < 60) {
+                            pic3 += 3;
+                        }
+                        if(this.level == 20) {
+                            pic1 = 1;
+                            pic2 = 2;
+                            pic3 = 3;
+                        }
+                    } else if(this.level == 11) {
+                        pic1 = 1;
+                        pic2 = 2;
+                        pic3 = 3;
+                    }
                     java.lang.Thread t = new java.lang.Thread(new java.lang.Runnable() {
                         @Override
                         public void run() {
@@ -676,7 +664,14 @@ public class Tetris {
                 }
             }
         }
-        panel.paintImmediately(0, 0, 240, 680);
+                    
+        try {
+            String image = "background.gif";
+            javax.swing.ImageIcon i = new javax.swing.ImageIcon(this.getClass().getResource(image));
+            java.awt.Image img = i.getImage();
+            java.awt.Graphics g = panel.getGraphics();
+            g.drawImage(img, 0, 0, panel.getWidth(), panel.getHeight(), null);
+        } catch(Exception ex) {System.out.println(ex.getMessage());}
     }
 
     private boolean isLeft(Piece piece)
@@ -698,7 +693,6 @@ public class Tetris {
                 return true;
             }
         }
-        
         for(int i = 0; i < thepieces.size(); i++) {
             if(piece != ((ThePiece)thepieces.get(i)).getPiece()) {
                 int j = 0;
@@ -717,7 +711,6 @@ public class Tetris {
                 } while(j < piece.block.length);
             }
         }
-    
         return false;        
     }
 
@@ -740,7 +733,6 @@ public class Tetris {
                 return true;
             }
         }
-        
         for(int i = 0; i < thepieces.size(); i++) {
             if(piece != ((ThePiece)thepieces.get(i)).getPiece()) {
                 int j = 0;
@@ -758,7 +750,6 @@ public class Tetris {
                 } while(j < piece.block.length);
             }
         }
-    
         return false;        
     }
 
@@ -783,7 +774,6 @@ public class Tetris {
                 } while(j < piece.block.length);
             }
         }
-    
         return false;        
     }
 
@@ -797,7 +787,6 @@ public class Tetris {
                 return true;
             }
         }
-        
         return false;
     }
 
@@ -811,7 +800,6 @@ public class Tetris {
                 return true;
             }
         }
-        
         return false;
     }
     
@@ -861,15 +849,20 @@ public class Tetris {
                 } while(f < piece.block.length);
             }
         }
-        
         return false;
     }
     
     public void BuildTetrisGuiAndEngineOfTheGame()
     {
-        frame.setTitle("Weedtris");
-        
+        try {
+            String image = "icon.png";
+            javax.swing.ImageIcon icon = new javax.swing.ImageIcon(getClass().getClassLoader().getResource(image));
+            frame.setIconImage(icon.getImage());
+        } catch(Exception e) {System.out.println(e.getMessage());}
+
         frame.setResizable(false);
+        
+        frame.setTitle("By Daniel Cho, released on 4/4/2018");
         
         java.awt.Dimension dim = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         
@@ -886,7 +879,25 @@ public class Tetris {
         panelZero.setLocation(0, 0);
 
         panelZero.setBackground(new java.awt.Color(210, 210, 210));        
+        
+        javax.swing.JPanel panelS = new javax.swing.JPanel();
+        panelS.setSize(new java.awt.Dimension(130, 140));
+        panelS.setLocation(10, 100);
+        
+        panelZero.add(panelS);
  
+        javax.swing.JPanel panelM = new javax.swing.JPanel();
+        panelM.setSize(new java.awt.Dimension(130, 140));
+        panelM.setLocation(10, 260);
+
+        panelZero.add(panelM);
+
+        javax.swing.JPanel panelF = new javax.swing.JPanel();
+        panelF.setSize(new java.awt.Dimension(130, 140));
+        panelF.setLocation(10, 410);
+
+        panelZero.add(panelF);
+
         panel.setBackground(new java.awt.Color(0, 0, 0));
 
         frame.add(panelZero);
@@ -917,6 +928,47 @@ public class Tetris {
        
         frame.show();
         
+        java.lang.Thread t = new java.lang.Thread(new java.lang.Runnable() {
+            public void run() {
+                while(true) {
+                    java.awt.Image img = null;
+                    try {
+
+                        String image = pic1 + ".gif";
+                        javax.swing.ImageIcon i = new javax.swing.ImageIcon(this.getClass().getResource(image));
+                        img = i.getImage();
+
+                        java.awt.Graphics g = panelS.getGraphics();
+                        g.drawImage(img, 0, 0, 130, 140, panelS);
+
+                    } catch(Exception e) {}
+
+                    try {
+
+                        String image = pic2 + ".gif";
+                        javax.swing.ImageIcon i = new javax.swing.ImageIcon(this.getClass().getResource(image));
+                        img = i.getImage();
+
+                        java.awt.Graphics g = panelM.getGraphics();
+                        g.drawImage(img, 0, 0, 130, 140, panelM);
+
+                    } catch(Exception e) {}
+
+                    try {
+
+                        String image = pic3 + ".gif";
+                        javax.swing.ImageIcon i = new javax.swing.ImageIcon(this.getClass().getResource(image));
+                        img = i.getImage();
+
+                        java.awt.Graphics g = panelF.getGraphics();
+                        g.drawImage(img, 0, 0, 130, 140, panelF);
+
+                    } catch(Exception e) {}
+                }
+            }
+        });
+        t.start();
+        
         this.frame.addKeyListener(new java.awt.event.KeyAdapter() {
 
             public void keyTyped(java.awt.event.KeyEvent e) {
@@ -924,6 +976,14 @@ public class Tetris {
             }
 
             public void keyPressed(java.awt.event.KeyEvent e) {
+
+                try {
+                    String image = "background.gif";
+                    javax.swing.ImageIcon i = new javax.swing.ImageIcon(this.getClass().getResource(image));
+                    java.awt.Image img = i.getImage();
+                    java.awt.Graphics g = panel.getGraphics();
+                    g.drawImage(img, 0, 0, panel.getWidth(), panel.getHeight(), null);
+                } catch(Exception ex) {System.out.println(ex.getMessage());}
 
                 if(e.getKeyCode() == java.awt.event.KeyEvent.VK_LEFT)
                 {
@@ -938,45 +998,7 @@ public class Tetris {
                             thepiece.getPiece().block[3].x > 0)
                         thepiece.moveLeft();
 
-                    panel.paintImmediately(0, 0, 240, 680);
-
-                    for(int i = 0; i < thepieces.size(); i++)
-                    {
-                        if(thepieces == null || thepieces.get(i) == null) {
-                            System.exit(-1);
-                        }
-                        ((ThePiece)thepieces.get(i)).drawImage();
-                    }     
-
-                    for(int i = 0; i < bombsHorizontally.size(); i++)
-                    {
-                        ((Bomb)bombsHorizontally.get(i)).drawImage(frame, panel);
-                    }    
-
-                    for(int s = 0; s < bombHorizontally.length; s++) {
-
-                        bombHorizontally[s].drawImage(frame, panel);
-                    }
-
-                    for(int i = 0; i < bombsVertically.size(); i++)
-                    {
-                        ((Bomb)bombsVertically.get(i)).drawImage(frame, panel);
-                    }    
-
-                    for(int s = 0; s < bombVertically.length; s++) {
-
-                        bombVertically[s].drawImage(frame, panel);
-                    }
-
-                    for(int i = 0; i < pies.size(); i++)
-                    {
-                        ((PieceOfMush)pies.get(i)).drawImage(frame, panel);
-                    }    
-
-                    for(int s = 0; s < pie.length; s++) {
-
-                        pie[s].drawImage(frame, panel);
-                    }
+                        DrawPieces();
                 }
 
                 else if(e.getKeyCode() == java.awt.event.KeyEvent.VK_RIGHT)
@@ -992,45 +1014,7 @@ public class Tetris {
                             thepiece.getPiece().block[3].x < 220)
                         thepiece.moveRight();
 
-                    panel.paintImmediately(0, 0, 240, 680);
-
-                    for(int i = 0; i < thepieces.size(); i++)
-                    {
-                        if(thepieces == null || thepieces.get(i) == null) {
-                            System.exit(-1);
-                        }
-                        ((ThePiece)thepieces.get(i)).drawImage();
-                    }     
-
-                    for(int i = 0; i < bombsHorizontally.size(); i++)
-                    {
-                        ((Bomb)bombsHorizontally.get(i)).drawImage(frame, panel);
-                    }    
-
-                    for(int s = 0; s < bombHorizontally.length; s++) {
-
-                        bombHorizontally[s].drawImage(frame, panel);
-                    }
-
-                    for(int i = 0; i < bombsVertically.size(); i++)
-                    {
-                        ((Bomb)bombsVertically.get(i)).drawImage(frame, panel);
-                    }    
-
-                    for(int s = 0; s < bombVertically.length; s++) {
-
-                        bombVertically[s].drawImage(frame, panel);
-                    }
-
-                    for(int i = 0; i < pies.size(); i++)
-                    {
-                        ((PieceOfMush)pies.get(i)).drawImage(frame, panel);
-                    }    
-
-                    for(int s = 0; s < pie.length; s++) {
-
-                        pie[s].drawImage(frame, panel);
-                    }
+                        DrawPieces();
                 }
                 
                 else if(e.getKeyCode() == java.awt.event.KeyEvent.VK_DOWN)
@@ -1057,118 +1041,17 @@ public class Tetris {
 
                         clear();
                         
-                        java.util.Random r2 = new java.util.Random();
-
-                        int v2 = r2.nextInt(5);
-
-                        if(v2 == 0) {
-
-                            square = new Square(120, 40);
-
-                            square.frame = frame;
-
-                            square.panel = panel;
-
-                            thepiece = square;
-
-                        } else if(v2 == 1) {
-
-                            pyr = new Pyramid(120, 40);
-
-                            pyr.frame = frame;
-
-                            pyr.panel = panel;
-
-                            thepiece = pyr;
-
-                        } else if(v2 == 2) {
-
-                            line = new Line(120, 40);
-
-                            line.frame = frame;
-
-                            line.panel = panel;            
-
-                            thepiece = line;
-
-                        } else if(v2 == 3) {
-
-                            larm = new Larm(120, 40);
-
-                            larm.frame = frame;
-
-                            larm.panel = panel;            
-
-                            thepiece = larm;
-
-                        } else if(v2 == 4) {
-
-                            rarm = new Rarm(120, 40);
-
-                            rarm.frame = frame;
-
-                            rarm.panel = panel;
-
-                            thepiece = rarm;
-                        }
-
-                        thepieces.add(thepiece);
-                    }
-
-                    else {
-                        
+                        GetNewPiece();
+                    
+                    } else {
                         thepiece.moveDown();
                     }
 
-                    panel.paintImmediately(0, 0, 240, 680);
-
-                    for(int i = 0; i < thepieces.size(); i++)
-                    {
-                        if(thepieces == null || thepieces.get(i) == null) {
-
-                            System.exit(-1);
-                        }
-
-                        else {
-                            ((ThePiece)thepieces.get(i)).drawImage();
-                        }
-                    }
-
-                    for(int i = 0; i < bombsHorizontally.size(); i++)
-                    {
-                        ((Bomb)bombsHorizontally.get(i)).drawImage(frame, panel);
-                    }    
-
-                    for(int s = 0; s < bombHorizontally.length; s++) {
-
-                        bombHorizontally[s].drawImage(frame, panel);
-                    }
-
-                    for(int i = 0; i < bombsVertically.size(); i++)
-                    {
-                        ((Bomb)bombsVertically.get(i)).drawImage(frame, panel);
-                    }    
-
-                    for(int s = 0; s < bombVertically.length; s++) {
-
-                        bombVertically[s].drawImage(frame, panel);
-                    }
- 
-                    for(int i = 0; i < pies.size(); i++)
-                    {
-                        ((PieceOfMush)pies.get(i)).drawImage(frame, panel);
-                    }    
-
-                    for(int s = 0; s < pie.length; s++) {
-
-                        pie[s].drawImage(frame, panel);
-                    }
+                    DrawPieces();
                 }
 
                 else if(e.getKeyCode() == java.awt.event.KeyEvent.VK_UP)
                 {
-                    panel.paintImmediately(0, 0, 240, 680);
-
                     thepiece.computeNextRotation();
 
                     if(thepiece.getPiece().block[0].x > 480 &&
@@ -1180,46 +1063,8 @@ public class Tetris {
                         thepiece.getPiece().block[2].x -= 80;
                         thepiece.getPiece().block[3].x -= 80;
                     }
-                    
-                    for(int i = 0; i < thepieces.size(); i++)
-                    {
 
-                        if(thepieces == null || thepieces.get(i) == null) {
-                            System.exit(-1);
-                        }
-                        
-                        ((ThePiece)thepieces.get(i)).drawImage();
-                    }     
-
-                    for(int i = 0; i < bombsHorizontally.size(); i++)
-                    {
-                        ((Bomb)bombsHorizontally.get(i)).drawImage(frame, panel);
-                    }    
-
-                    for(int s = 0; s < bombHorizontally.length; s++) {
-
-                        bombHorizontally[s].drawImage(frame, panel);
-                    }
-
-                    for(int i = 0; i < bombsVertically.size(); i++)
-                    {
-                        ((Bomb)bombsVertically.get(i)).drawImage(frame, panel);
-                    }    
-
-                    for(int s = 0; s < bombVertically.length; s++) {
-
-                        bombVertically[s].drawImage(frame, panel);
-                    }
-
-                    for(int i = 0; i < pies.size(); i++)
-                    {
-                        ((PieceOfMush)pies.get(i)).drawImage(frame, panel);
-                    }    
-
-                    for(int s = 0; s < pie.length; s++) {
-
-                        pie[s].drawImage(frame, panel);
-                    }
+                    DrawPieces();
                 }
             }
 
@@ -1227,7 +1072,62 @@ public class Tetris {
             }
         });
     }
-    
+
+    private void DrawPieces()
+    {
+        for(int i = 0; i < thepieces.size(); i++)
+        {
+            if(thepieces == null || thepieces.get(i) == null) {
+
+                System.exit(-1);
+            }
+
+            else {
+                ((ThePiece)thepieces.get(i)).drawImage();
+            }
+        }
+
+        for(int i = 0; i < bombsHorizontally.size(); i++)
+        {
+            ((Bomb)bombsHorizontally.get(i)).drawImage(frame, panel);
+        }    
+
+        for(int s = 0; s < bombHorizontally.length; s++) {
+
+            bombHorizontally[s].drawImage(frame, panel);
+        }
+
+        for(int i = 0; i < bombsVertically.size(); i++)
+        {
+            ((Bomb)bombsVertically.get(i)).drawImage(frame, panel);
+        }    
+
+        for(int s = 0; s < bombVertically.length; s++) {
+
+            bombVertically[s].drawImage(frame, panel);
+        }
+
+        for(int i = 0; i < bombsRandomnlly.size(); i++)
+        {
+            ((Bomb)bombsRandomnlly.get(i)).drawImage(frame, panel);
+        }    
+
+        for(int s = 0; s < bombRandomnlly.length; s++) {
+
+            bombRandomnlly[s].drawImage(frame, panel);
+        }
+
+        for(int i = 0; i < pies.size(); i++)
+        {
+            ((PieceOfMush)pies.get(i)).drawImage(frame, panel);
+        }    
+
+        for(int s = 0; s < pie.length; s++) {
+
+            pie[s].drawImage(frame, panel);
+        }
+    }
+
     public static void main(String[] args) {
 
         Tetris tetris = new Tetris();
